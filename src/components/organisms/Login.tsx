@@ -1,7 +1,9 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { BsCaretLeftFill } from 'react-icons/bs'
 import Button from '@atoms/Button'
 import Input from '@atoms/Input'
+import Link from '@atoms/Link'
 
 const fields = {
     email: 'translate-x-0',
@@ -17,7 +19,13 @@ const messages = {
     ),
 }
 
+const labelButton = {
+    email: 'Continue',
+    password: 'Entrar',
+}
+
 const Login = () => {
+    const [type, setType] = useState<keyof typeof fields>('email')
     const {
         register,
         handleSubmit,
@@ -26,8 +34,6 @@ const Login = () => {
         setFocus,
     } = useForm()
     const { email } = watch()
-
-    const [type, setType] = useState<keyof typeof fields>('email')
 
     const toogleType = () => {
         if (type === 'email') {
@@ -50,20 +56,17 @@ const Login = () => {
     return (
         <div className="relative h-screen flex justify-center p-10">
             {type === 'password' && (
-                <a
+                <Button
                     onClick={toogleType}
-                    className="absolute top-10 left-10 text-[14px] text-link cursor-pointer"
+                    className="absolute top-8 left-10 text-base bg-link text-white rounded-full cursor-pointer px-3 py-3"
                 >
-                    Voltar
-                </a>
+                    <BsCaretLeftFill />
+                </Button>
             )}
 
-            <a
-                className="absolute top-10 right-10 underline text-[14px] text-link"
-                href="/"
-            >
+            <Link className="absolute top-10 right-10 underline " to="/">
                 Criar uma conta
-            </a>
+            </Link>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="w-full overflow-hidden flex flex-col justify-center gap-10"
@@ -93,7 +96,7 @@ const Login = () => {
                 </div>
 
                 <Button type="submit" className="w-full">
-                    Continue
+                    {labelButton[type]}
                 </Button>
             </form>
         </div>
