@@ -58,13 +58,13 @@ const Login = () => {
             {type === 'password' && (
                 <Button
                     onClick={toogleType}
-                    className="absolute top-8 left-10 text-base bg-link text-white rounded-full cursor-pointer px-3 py-3"
+                    className="absolute top-8 left-10 text-base text-white rounded-full cursor-pointer px-3 py-3"
                 >
                     <BsCaretLeftFill />
                 </Button>
             )}
 
-            <Link className="absolute top-10 right-10 underline " to="/">
+            <Link className="absolute top-10 right-10 underline " to="/signup">
                 Criar uma conta
             </Link>
             <form
