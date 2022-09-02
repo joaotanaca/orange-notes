@@ -4,7 +4,7 @@ import { BsCaretLeftFill } from 'react-icons/bs'
 import Button from '@atoms/Button'
 import Input from '@atoms/Input'
 import Link from '@atoms/Link'
-import { api } from 'services'
+import { LoginData, useAuth } from 'context/auth'
 
 const fields = {
     email: 'translate-x-0',
@@ -26,6 +26,7 @@ const labelButton = {
 }
 
 const Login = () => {
+    const { AuthLogin, loading } = useAuth()
     const [type, setType] = useState<keyof typeof fields>('email')
     const {
         register,
@@ -33,7 +34,7 @@ const Login = () => {
         watch,
         formState: { errors },
         setFocus,
-    } = useForm()
+    } = useForm<LoginData>()
     const { email } = watch()
 
     const toogleType = () => {
@@ -50,18 +51,12 @@ const Login = () => {
         }
     }
 
-    const onSubmit = useCallback(async (data: any) => {
+    const onSubmit = (data: LoginData) => {
         if (type === 'email') toogleType()
         else {
-            const { data: response } = await api.post('/auth/login', {
-                ...data,
-            })
-            api.defaults.headers.common['authorization'] = response
-
-            const { data: response1 } = await api.get('/user/')
-            console.log(response1)
+            AuthLogin(data)
         }
-    }, [])
+    }
 
     return (
         <div className="relative h-screen flex justify-center p-10">
@@ -92,9 +87,9 @@ const Login = () => {
                 >
                     <Input
                         className="w-[33%]"
-                        type="text"
+                        type="email"
                         placeholder="Email"
-                        // inputMode="email"
+                        inputMode="email"
                         {...register('email')}
                     />
                     <Input
@@ -105,8 +100,8 @@ const Login = () => {
                     />
                 </div>
 
-                <Button type="submit" className="w-full">
-                    {labelButton[type]}
+                <Button disabled={loading} type="submit" className="w-full">
+                    {loading ? 'Entrando' : labelButton[type]}
                 </Button>
             </form>
         </div>
