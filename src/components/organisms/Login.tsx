@@ -4,6 +4,7 @@ import { BsCaretLeftFill } from 'react-icons/bs'
 import Button from '@atoms/Button'
 import Input from '@atoms/Input'
 import Link from '@atoms/Link'
+import { api } from 'services'
 
 const fields = {
     email: 'translate-x-0',
@@ -49,8 +50,17 @@ const Login = () => {
         }
     }
 
-    const onSubmit = useCallback((data: any) => {
-        toogleType()
+    const onSubmit = useCallback(async (data: any) => {
+        if (type === 'email') toogleType()
+        else {
+            const { data: response } = await api.post('/auth/login', {
+                ...data,
+            })
+            api.defaults.headers.common['authorization'] = response
+
+            const { data: response1 } = await api.get('/user/')
+            console.log(response1)
+        }
     }, [])
 
     return (
@@ -82,9 +92,9 @@ const Login = () => {
                 >
                     <Input
                         className="w-[33%]"
-                        type="email"
+                        type="text"
                         placeholder="Email"
-                        inputMode="email"
+                        // inputMode="email"
                         {...register('email')}
                     />
                     <Input
