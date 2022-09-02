@@ -19,7 +19,9 @@
         "paths": {
             "@atoms/*": ["./components/atoms/*"],
             "@molecules/*": ["./components/molecules/*"],
-            "@organisms/*": ["./components/organisms/*"]
+            "@organisms/*": ["./components/organisms/*"],
+            "@context/*": ["./context/*"],
+            "@services/*": ["./services/*"]
         }
     },
     "include": ["src"],
