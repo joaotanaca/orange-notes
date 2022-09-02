@@ -5,6 +5,8 @@ import Button from '@atoms/Button'
 import Link from '@atoms/Link'
 import Input from '@atoms/Input'
 import { useNavigate } from 'react-router'
+import { useAuth } from 'context/auth'
+import type { SignupData } from 'context/auth'
 
 const fields = {
     email: 'translate-x-0',
@@ -17,15 +19,18 @@ const labelButton = {
 }
 
 const SignUp = () => {
+    const { AuthSignUp } = useAuth()
     const navigate = useNavigate()
     const [type, setType] = useState<keyof typeof fields>('email')
-    const { register, handleSubmit, setFocus } = useForm()
+    const { register, handleSubmit, setFocus } = useForm<
+        SignupData & { confirmPassword: string }
+    >()
 
     const toogleType = () => {
         if (type === 'email') {
             setType('personInfo')
             setTimeout(() => {
-                setFocus('firstName')
+                setFocus('name')
             }, 500)
         } else {
             setType('email')
@@ -39,7 +44,7 @@ const SignUp = () => {
         if (type === 'email') {
             toogleType()
         } else {
-            console.log(data)
+            AuthSignUp(data)
         }
     }, [])
 
@@ -48,7 +53,7 @@ const SignUp = () => {
             <Button
                 onClick={() => {
                     if (type === 'email') {
-                        navigate('/')
+                        navigate('/login')
                     } else {
                         toogleType()
                     }
@@ -57,7 +62,10 @@ const SignUp = () => {
             >
                 <BsCaretLeftFill />
             </Button>
-            <Link className="absolute top-10 right-10 underline text-xs" to="/">
+            <Link
+                className="absolute top-10 right-10 underline text-xs"
+                to="/login"
+            >
                 Tem uma conta? Acesse
             </Link>
             <form
@@ -68,7 +76,13 @@ const SignUp = () => {
                 <div
                     className={`grid grid-cols-3 justify-between w-[300%] mt-3 transition-all duration-500 ${fields[type]}`}
                 >
-                    <div className="flex flex-col gap-4 col-span-1">
+                    <div className="flex flex-col gap-8 justify-center  col-span-1">
+                        <Input
+                            className="w-full"
+                            type="text"
+                            placeholder="Nome"
+                            {...register('name')}
+                        />
                         <Input
                             className="w-full"
                             type="email"
@@ -76,6 +90,8 @@ const SignUp = () => {
                             inputMode="email"
                             {...register('email')}
                         />
+                    </div>
+                    <div className="flex flex-col gap-4 col-span-1  col-start-3">
                         <Input
                             className="w-full"
                             type="password"
@@ -87,20 +103,6 @@ const SignUp = () => {
                             type="password"
                             placeholder="Confirmação de senha"
                             {...register('confirmPassword')}
-                        />
-                    </div>
-                    <div className="flex flex-col gap-8 justify-center  col-span-1 col-start-3">
-                        <Input
-                            className="w-full"
-                            type="text"
-                            placeholder="Nome"
-                            {...register('firstName')}
-                        />
-                        <Input
-                            className="w-full"
-                            type="text"
-                            placeholder="Sobrenome"
-                            {...register('lastName')}
                         />
                     </div>
                 </div>
