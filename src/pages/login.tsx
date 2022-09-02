@@ -1,7 +1,7 @@
 import Login from '@organisms/Login'
 
-function App() {
+function LoginPage() {
     return <Login />
 }
 
-export default App
+export default LoginPage
