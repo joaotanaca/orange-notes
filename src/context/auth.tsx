@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios'
 import {
     createContext,
     useContext,
@@ -17,10 +16,15 @@ export type SignupData = LoginData & { name: string }
 
 export type User = { id: string; email: string; password: string }
 
+type AuthFunction = (
+    arg0: LoginData | SignupData,
+    endpoint?: 'login' | 'signup'
+) => Promise<void>
+
 const AuthContext = createContext(
     {} as {
-        AuthLogin: (arg0: LoginData) => Promise<void>
-        AuthSignUp: (arg0: SignupData) => Promise<void>
+        Auth: AuthFunction
+        authLoading: boolean
         loading: boolean
         user: User
         initialize: () => Promise<void>
@@ -31,14 +35,15 @@ export const AuthProvider: FunctionComponent<PropsWithChildren> = ({
     children,
 }) => {
     const [user, setUser] = useState({} as User)
+    const [authLoading, setAuthLoading] = useState(false)
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    async function AuthLogin(data: LoginData) {
+    const Auth: AuthFunction = async (data, endpoint = 'login') => {
         setLoading(prev => !prev)
 
         try {
-            const { data: response } = await api.post('/auth/login', {
+            const { data: response } = await api.post(`/auth/${endpoint}`, {
                 ...data,
             })
             localStorage.setItem('token', response)
@@ -51,30 +56,20 @@ export const AuthProvider: FunctionComponent<PropsWithChildren> = ({
         setLoading(prev => !prev)
     }
 
-    async function AuthSignUp(data: SignupData) {
-        setLoading(prev => !prev)
-
-        try {
-            const { data: response } = await api.post('/auth/signup', {
-                ...data,
-            })
-            localStorage.setItem('token', response)
-
-            const user = await getUser(response)
-
-            setUser(user)
-            navigate('/dashboard')
-        } catch (error) {}
-        setLoading(prev => !prev)
-    }
+    async function Logout(data: SignupData) {}
 
     async function initialize() {
         const token = localStorage.getItem('token')
         if (token) {
-            const user = await getUser(token)
+            setAuthLoading(true)
+            try {
+                const user = await getUser(token)
 
-            setUser(user)
+                setUser(user)
+            } catch (err) {}
+            setAuthLoading(false)
         } else {
+            return navigate('/login')
         }
     }
 
@@ -84,7 +79,13 @@ export const AuthProvider: FunctionComponent<PropsWithChildren> = ({
 
     return (
         <AuthContext.Provider
-            value={{ AuthLogin, AuthSignUp, initialize, loading, user }}
+            value={{
+                Auth,
+                initialize,
+                authLoading,
+                loading,
+                user,
+            }}
         >
             {children}
         </AuthContext.Provider>
