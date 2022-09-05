@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, useMemo } from 'react'
 
 type Props = PropsWithChildren<
     React.DetailedHTMLProps<
@@ -8,9 +8,19 @@ type Props = PropsWithChildren<
 >
 
 const Button = ({ children, className, ...props }: Props) => {
+    const padding = useMemo(
+        () => (!className?.match(/p-|px-|py-/g) ? 'px-8 py-4' : ''),
+        [className]
+    )
+
+    const rounded = useMemo(
+        () => (!className?.match(/rounded-/g) ? 'rounded-xl' : ''),
+        [className]
+    )
+
     return (
         <button
-            className={`transition-all flex justify-center items-center gap-1 px-8 py-4 rounded-xl text-white text-base font-medium bg-brand hover:bg-brandHover active:bg-brandActive disabled:opacity-60 ${className}`}
+            className={`transition-all flex justify-center items-center gap-1 text-white text-base font-medium bg-brand hover:bg-brandHover active:bg-brandActive disabled:opacity-60 ${padding} ${rounded} ${className}`}
             {...props}
         >
             {children}

@@ -1,8 +1,9 @@
 import { Suspense, useEffect } from 'react'
 import { useLocation, useNavigate, useRoutes } from 'react-router'
+import { useAuth } from '@context/auth'
+import Navbar from '@molecules/Navbar'
 import routes from '~react-pages'
 import 'react-toastify/dist/ReactToastify.min.css'
-import { useAuth } from '@context/auth'
 
 function App() {
     const { authLoading, user } = useAuth()
@@ -10,7 +11,7 @@ function App() {
     const navigate = useNavigate()
     useEffect(() => {
         if (
-            pathname.match(/login|signup/g)?.length &&
+            pathname.match(/login|signup|dashboard/g)?.length &&
             Object.keys(user).length &&
             !authLoading
         ) {
@@ -24,7 +25,10 @@ function App() {
                     Autenticando
                 </div>
             ) : (
-                useRoutes(routes)
+                <>
+                    <Navbar />
+                    {useRoutes(routes)}
+                </>
             )}
         </Suspense>
     )

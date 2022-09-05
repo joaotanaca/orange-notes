@@ -19,6 +19,12 @@ module.exports = {
                 submarineJuice: '#FFCC81',
                 lightBlue: { 100: '#f5f7f9', 200: '#dfe5ec', 300: '#c8d4df' },
             },
+            dropShadow: {
+                '3xl': [
+                    '0 0 5px rgba(0,0,0,0.19)',
+                    ' 0 0 1px rgba(0,0,0,0.23)',
+                ],
+            },
         },
     },
     plugins: [],
