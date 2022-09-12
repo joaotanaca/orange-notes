@@ -1,25 +1,36 @@
 import Button from '@atoms/Button'
-import { useModal } from '@context/modal'
-import SubTask from '@molecules/SubTask'
-import SubTasks from '@organisms/SubTasks'
-import { BsCaretLeftFill, BsThreeDots } from 'react-icons/bs'
-import { useNavigate } from 'react-router'
+import { api } from '@services/index'
+import { useEffect, useState } from 'react'
+import { BsCaretLeftFill } from 'react-icons/bs'
+import { useNavigate, useParams } from 'react-router'
 
 const DetailsTask = () => {
-    const { showModal, toogleShowModal } = useModal()
+    const [task, setTask] = useState(
+        {} as {
+            title: string
+            subtitle: string
+            description: string
+            subtasks: { title: string; checked: boolean }[]
+        }
+    )
+    const { id } = useParams()
     const navigate = useNavigate()
 
+    const handleGetTask = async () => {
+        const { data } = await api.get(`/task/${id}`)
+        setTask(data)
+    }
+
+    useEffect(() => {
+        handleGetTask()
+    }, [])
+
     return (
-        <div className="p-8 flex flex-col gap-4">
+        <div className="flex flex-col gap-4 p-6">
             <nav className="relative w-full flex justify-center items-center">
                 <Button
                     onClick={() => {
-                        if (showModal) {
-                            window.history.replaceState(null, '', '/dashboard')
-                            toogleShowModal()
-                        } else {
-                            navigate(-1)
-                        }
+                        navigate(-1)
                     }}
                     className="absolute left-0 text-base text-white rounded-full cursor-pointer px-3 py-3"
                 >
@@ -28,25 +39,12 @@ const DetailsTask = () => {
                 <h2 className="font-semibold text-lg">Detalhes da tarefa</h2>
             </nav>
             <div className="mt-2">
-                <h1 className="text-[2rem] font-semibold">Titulo</h1>
-                <p className="text-base">Subtitulo</p>
+                <h1 className="text-[2rem] font-semibold">{task?.title}</h1>
+                <p className="text-base">{task?.subtitle}</p>
             </div>
             <div>
                 <p className="text-lg font-semibold">Description</p>
-                <p className="text-sm text-gray-600">texto descritivo</p>
-            </div>
-            <div>
-                <p className="text-lg font-semibold mb-4">Subtarefas</p>
-                <div className="">
-                    <SubTasks
-                        items={[
-                            { title: 'Subtarefa', checked: true },
-                            { title: 'Subtarefa' },
-                            { title: 'Subtarefa' },
-                            { title: 'Subtarefa', checked: true },
-                        ]}
-                    />
-                </div>
+                <p className="text-sm text-gray-600">{task?.description}</p>
             </div>
         </div>
     )

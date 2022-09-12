@@ -1,33 +1,18 @@
 import Cards from '@organisms/Cards'
-import React from 'react'
+import { api } from '@services/index'
+import React, { useEffect, useState } from 'react'
 
 const Dashboard: React.FC = () => {
+    const [tasks, setTasks] = useState<any>([])
+    useEffect(() => {
+        api.get('/task').then(({ data }) => {
+            setTasks(data)
+        })
+    }, [])
+
     return (
         <div className="w-full px-6 py-8">
-            <Cards
-                items={[
-                    {
-                        title: 'Teste titulo',
-                        description: 'Teste description',
-                        percentage: 50,
-                    },
-                    {
-                        title: 'Teste titulo',
-                        description: 'Teste description',
-                        percentage: 50,
-                    },
-                    {
-                        title: 'Teste titulo',
-                        description: 'Teste description',
-                        percentage: 50,
-                    },
-                    {
-                        title: 'Teste titulo',
-                        description: 'Teste description',
-                        percentage: 50,
-                    },
-                ]}
-            />
+            <Cards items={tasks} />
         </div>
     )
 }

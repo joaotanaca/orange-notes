@@ -2,7 +2,10 @@ import React, { memo, useMemo } from 'react'
 import type { SubTaskProps } from '@molecules/SubTask'
 import SubTask from '@molecules/SubTask'
 
-const SubTasks: React.FC<{ items: SubTaskProps[] }> = ({ items: subtasks }) => {
+const SubTasks: React.FC<{ items: SubTaskProps[]; onChange: any }> = ({
+    items: subtasks,
+    onChange,
+}) => {
     const renderSubtasks = useMemo(
         () =>
             subtasks.map((subtask, index) => (
