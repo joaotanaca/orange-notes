@@ -4,6 +4,7 @@ import Button from '@atoms/Button'
 import Input from '@atoms/Input'
 import { useAuth } from '@context/auth'
 import { api } from '@services/index'
+import { useNavigate } from 'react-router-dom'
 
 type Fields = {
     title: string
@@ -16,6 +17,7 @@ type Subtasks = { title: string; checked: boolean }[]
 const AddTask: React.FC = () => {
     const { user } = useAuth()
     const [subtasks, setSubtasks] = useState<Subtasks>([])
+    const navigate = useNavigate()
     // const [activeSubtask, setActiveSubtask] = useState('')
     const {
         register,
@@ -25,7 +27,12 @@ const AddTask: React.FC = () => {
 
     const onSubmit = async (data: Fields) => {
         try {
-            await api.post('/task', { ...data, subtasks, userId: user.id })
+            const response = await api.post<{ id: string }>('/task', {
+                ...data,
+                subtasks,
+                userId: user.id,
+            })
+            navigate(`/dashboard/details-task/${response.data.id}`)
         } catch (err) {}
     }
 

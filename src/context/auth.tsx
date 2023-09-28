@@ -25,6 +25,7 @@ const AuthContext = createContext(
     {} as {
         Auth: AuthFunction
         authLoading: boolean
+        logout: () => void
         loading: boolean
         user: User
         initialize: () => Promise<void>
@@ -56,7 +57,11 @@ export const AuthProvider: FunctionComponent<PropsWithChildren> = ({
         setLoading(prev => !prev)
     }
 
-    async function Logout(data: SignupData) {}
+    async function Logout() {
+        localStorage.removeItem('token')
+        setUser({} as User);
+        navigate('/login')
+    }
 
     async function initialize() {
         const token = localStorage.getItem('token')
@@ -82,6 +87,7 @@ export const AuthProvider: FunctionComponent<PropsWithChildren> = ({
             value={{
                 Auth,
                 initialize,
+                logout: Logout,
                 authLoading,
                 loading,
                 user,

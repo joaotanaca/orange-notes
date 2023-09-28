@@ -6,8 +6,7 @@ import { useNavigate } from 'react-router'
 // import { Container } from './styles';
 
 const setting: React.FC = () => {
-    const { user } = useAuth()
-    const navigate = useNavigate()
+    const { user, logout } = useAuth()
 
     return (
         <div className="p-8 flex flex-col gap-6">
@@ -16,13 +15,7 @@ const setting: React.FC = () => {
                 <div>{user.email}</div>
             </div>
 
-            <Button
-                className="w-full"
-                onClick={() => {
-                    localStorage.removeItem('token')
-                    navigate('/login')
-                }}
-            >
+            <Button className="w-full" onClick={logout}>
                 Logout
             </Button>
         </div>
